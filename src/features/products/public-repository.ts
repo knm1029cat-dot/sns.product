@@ -1,7 +1,7 @@
 import { neonDatabase, type DatabaseQuery } from "@/lib/database";
 import { isDatabaseConfigured } from "@/lib/env";
 import { getToolDefinition } from "@/tools/registry";
-import { demoProduct } from "./demo-product";
+import { demoPublishedProducts } from "./demo-product";
 import { parseProductRow, type ProductRecord } from "./types";
 
 const columns = "id, name, slug, category, status, short_description, spec_json, spec_version, published_at";
@@ -20,11 +20,13 @@ export async function queryPublishedProductBySlug(database: DatabaseQuery, slug:
 }
 
 export async function getPublishedProducts() {
-  if (!isDatabaseConfigured()) return process.env.TOOL_FACTORY_DEMO_DATA === "true" ? [demoProduct] : [];
+  if (process.env.TOOL_FACTORY_DEMO_DATA === "true") return demoPublishedProducts;
+  if (!isDatabaseConfigured()) return [];
   return queryPublishedProducts(neonDatabase);
 }
 
 export async function getPublishedProductBySlug(slug: string) {
-  if (!isDatabaseConfigured()) return process.env.TOOL_FACTORY_DEMO_DATA === "true" && slug === demoProduct.slug ? demoProduct : null;
+  if (process.env.TOOL_FACTORY_DEMO_DATA === "true") return demoPublishedProducts.find((product) => product.slug === slug) ?? null;
+  if (!isDatabaseConfigured()) return null;
   return queryPublishedProductBySlug(neonDatabase, slug);
 }

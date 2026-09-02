@@ -131,6 +131,18 @@ npm run test:e2e
 
 Unit Testはmock DBでtransaction、rollback、公開Query、Analyticsを検証します。Neon実接続と実DB制約は、接続先へmigrationを適用した後に別途確認してください。
 
+## 商品追加フロー
+
+管理者は`/admin/products/new`で商品アイデアを入力し、AI生成されたProduct Specificationを確認・編集できます。「この仕様で進める」を押した場合だけ、Zod検証後にDRAFT商品とversion 1の履歴を同じDB transactionで登録します。公開やRegistryのコード変更は自動実行しません。
+
+AI ProviderはOpenAI互換Chat Completions形式です。`.env.local`またはVercelへ次を設定してください。値をClientへ公開しないでください。
+
+- `AI_PROVIDER_ENDPOINT`
+- `AI_API_KEY`
+- `AI_MODEL`
+
+承認後は`SPEC.md`、`IMPLEMENTATION.md`、`REGISTRY_PATCH.md`、`TEST_CASES.md`、`QA_CHECKLIST.md`、`PRODUCT_META.json`を含むZIPをダウンロードできます。新商品の通常登録では`seed.sql`を編集しません。
+
 ## Vercel設定
 
 Vercel ProjectのSettings > Environment Variablesへ`DATABASE_URL`、`ADMIN_PASSWORD_HASH`、`SESSION_SECRET`を登録し、対象環境を選択して再deployします。値をソースコード、README、公開ログへ貼り付けないでください。

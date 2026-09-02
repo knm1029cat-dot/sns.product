@@ -14,7 +14,7 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--background); color: var(--foreground); font-family: Arial, "Noto Sans JP", sans-serif; }
 a { color: inherit; text-decoration: none; }
-button, input { font: inherit; }
+button, input, textarea, select { font: inherit; }
 .container { width: min(1080px, calc(100% - 32px)); margin-inline: auto; }
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 8px 30px rgba(29, 48, 89, .06); }
 .button { display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 10px; padding: 11px 18px; background: var(--primary); color: white; font-weight: 700; cursor: pointer; }
@@ -39,4 +39,10 @@ button, input { font: inherit; }
 .preview th { background: #f4f6fb; }
 .form-field { display: grid; gap: 6px; }
 .form-field input { border: 1px solid var(--border); border-radius: 9px; padding: 11px; }
+.form-field textarea, .form-field select, .code-editor { border: 1px solid var(--border); border-radius: 9px; padding: 11px; }
+.code-editor { width: 100%; font-family: monospace; }
+.image-result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.image-result { display: grid; gap: 10px; padding: 14px; border: 1px solid var(--border); border-radius: 12px; min-width: 0; }
+.image-result img { width: 100%; height: 180px; object-fit: contain; background: #f4f6fb; border-radius: 8px; }
+.image-result strong { overflow-wrap: anywhere; }
 main { padding-bottom: 72px; }

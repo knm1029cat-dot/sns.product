@@ -23,7 +23,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       </section>
       <ToolComponent productId={product.id} />
       <section className="grid" style={{ marginTop: 24 }}>
-        <div className="card"><h2>使い方</h2><ol><li>CSVを2〜10件選択</li><li>結合ボタンを押す</li><li>結果を確認してダウンロード</li></ol></div>
+        <div className="card"><h2>使い方</h2><ol>{definition.usageSteps.map((step) => <li key={step}>{step}</li>)}</ol></div>
         <div className="card"><h2>制限事項</h2><ul>{spec.limitations.map((item) => <li key={item}>{item}</li>)}</ul></div>
       </section>
     </main>

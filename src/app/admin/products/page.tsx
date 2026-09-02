@@ -13,6 +13,7 @@ export default async function AdminProductsPage() {
     <main className="container">
       <AdminHeader />
       <h1>商品</h1>
+      <p><Link className="button" href="/admin/products/new">新しい商品を追加</Link></p>
       <div className="stack">
         {products.map((product) => (
           <Link className="card" href={`/admin/products/${product.id}`} key={product.id}>

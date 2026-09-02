@@ -9,6 +9,12 @@ const authEnvSchema = z.object({
   SESSION_SECRET: z.string().min(32),
 });
 
+const aiEnvSchema = z.object({
+  AI_PROVIDER_ENDPOINT: z.url(),
+  AI_API_KEY: z.string().min(1),
+  AI_MODEL: z.string().min(1),
+});
+
 export function getDatabaseEnv() {
   return databaseEnvSchema.safeParse({ DATABASE_URL: process.env.DATABASE_URL });
 }
@@ -26,4 +32,8 @@ export function isDatabaseConfigured(): boolean {
 
 export function isAdminAuthConfigured(): boolean {
   return getAuthEnv().success;
+}
+
+export function getAiEnv() {
+  return aiEnvSchema.safeParse({ AI_PROVIDER_ENDPOINT: process.env.AI_PROVIDER_ENDPOINT, AI_API_KEY: process.env.AI_API_KEY, AI_MODEL: process.env.AI_MODEL });
 }
