@@ -1,0 +1,2 @@
+name,note
+山田,CSV以外

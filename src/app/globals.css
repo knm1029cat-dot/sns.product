@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7f8fc;
+  --foreground: #172033;
+  --surface: #ffffff;
+  --primary: #2357d9;
+  --primary-dark: #1845b8;
+  --border: #dfe4ef;
+  --muted: #64708a;
+  --danger: #b42318;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--background); color: var(--foreground); font-family: Arial, "Noto Sans JP", sans-serif; }
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; }
+.container { width: min(1080px, calc(100% - 32px)); margin-inline: auto; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 8px 30px rgba(29, 48, 89, .06); }
+.button { display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 10px; padding: 11px 18px; background: var(--primary); color: white; font-weight: 700; cursor: pointer; }
+.button:hover { background: var(--primary-dark); }
+.button:disabled { cursor: not-allowed; opacity: .5; }
+.button-secondary { background: white; color: var(--foreground); border: 1px solid var(--border); }
+.muted { color: var(--muted); }
+.error { color: var(--danger); background: #fff1f0; border: 1px solid #ffccc7; border-radius: 10px; padding: 12px; }
+.badge { display: inline-flex; border-radius: 999px; padding: 4px 10px; background: #e9efff; color: #1746b3; font-size: 13px; font-weight: 700; }
+.stack { display: grid; gap: 16px; }
+.site-header { background: rgba(255,255,255,.9); border-bottom: 1px solid var(--border); }
+.site-header-inner { display: flex; align-items: center; justify-content: space-between; min-height: 68px; }
+.nav { display: flex; gap: 20px; }
+.hero { padding: 72px 0 44px; }
+.hero h1 { max-width: 760px; margin: 0 0 16px; font-size: clamp(36px, 6vw, 62px); line-height: 1.08; letter-spacing: -.04em; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+.tool-dropzone { display: grid; place-items: center; min-height: 190px; border: 2px dashed #aab6d0; border-radius: 14px; background: #f9fbff; text-align: center; padding: 24px; }
+.file-list { margin: 0; padding-left: 22px; }
+.preview { overflow: auto; border: 1px solid var(--border); border-radius: 10px; }
+.preview table { width: 100%; border-collapse: collapse; min-width: 480px; }
+.preview th, .preview td { padding: 9px 12px; border-bottom: 1px solid var(--border); text-align: left; white-space: pre-wrap; }
+.preview th { background: #f4f6fb; }
+.form-field { display: grid; gap: 6px; }
+.form-field input { border: 1px solid var(--border); border-radius: 9px; padding: 11px; }
+main { padding-bottom: 72px; }
