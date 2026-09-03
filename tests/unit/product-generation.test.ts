@@ -1,7 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AiProvider } from "@/features/product-generation/ai-provider";
 import { createDevelopmentPackage } from "@/features/product-generation/development-package";
 import { generateProductSpecification, PRODUCT_SPEC_PROMPT_VERSION } from "@/features/product-generation/generate-spec";
+import { extractChatCompletionContent, OpenAiCompatibleProvider } from "@/features/product-generation/openai-compatible-provider";
 import { createRegistryCandidate, validateRegistryCandidate } from "@/features/product-generation/registry-candidate";
 import { imageResizeSpecification } from "@/tools/image/resize/spec";
 
@@ -15,6 +16,12 @@ describe("Product Specification生成", () => {
   it("不正JSONを拒否する", async () => {
     await expect(generateProductSpecification(provider("not json"), { name: "test" })).rejects.toThrow("有効なJSON");
   });
+  it("Markdown code fence付きJSONを正規化して検証する", async () => {
+    await expect(generateProductSpecification(provider(`\`\`\`json\n${JSON.stringify(specification)}\n\`\`\``), { name: "test" })).resolves.toEqual(specification);
+  });
+  it("別オブジェクトで包まれたrootを明示的に拒否する", async () => {
+    await expect(generateProductSpecification(provider(JSON.stringify({ productSpecification: specification })), { name: "test" })).rejects.toThrow("root");
+  });
   it.each([[{ ...specification, slug: "Invalid Slug" }], [{ ...specification, category: "video" }], [{ ...specification, features: [] }]])("Zod不一致を拒否する", async (invalid) => {
     await expect(generateProductSpecification(provider(JSON.stringify(invalid)), { name: "test" })).rejects.toThrow();
   });
@@ -23,6 +30,24 @@ describe("Product Specification生成", () => {
     const spy: AiProvider = { generateJson: async (_prompt, input) => { received = input; return JSON.stringify(specification); } };
     await generateProductSpecification(spy, { name: "test" });
     expect(received).toMatchObject({ promptVersion: PRODUCT_SPEC_PROMPT_VERSION });
+  });
+});
+
+describe("OpenAI Chat Completions response", () => {
+  afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); });
+
+  it("choices[0].message.contentの文字列だけを取得する", () => {
+    expect(extractChatCompletionContent({ id: "chatcmpl-test", choices: [{ message: { role: "assistant", content: "{\"ok\":true}" } }] })).toBe("{\"ok\":true}");
+  });
+  it.each([{}, { choices: [] }, { choices: [{ message: {} }] }, { choices: [{ message: { content: null } }] }, { choices: [{ message: { content: { text: "json" } } }] }])("content不存在または非文字列を拒否する", (response) => {
+    expect(() => extractChatCompletionContent(response)).toThrow("choices[0].message.content");
+  });
+  it("mock Chat Completions responseから本文を返す", async () => {
+    vi.stubEnv("AI_PROVIDER_ENDPOINT", "https://api.openai.test/v1/chat/completions");
+    vi.stubEnv("AI_API_KEY", "test-only-key");
+    vi.stubEnv("AI_MODEL", "test-model");
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(specification) } }] }), { status: 200 })));
+    await expect(new OpenAiCompatibleProvider().generateJson("prompt", { idea: "test" })).resolves.toBe(JSON.stringify(specification));
   });
 });
 
